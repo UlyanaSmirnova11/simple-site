@@ -1,57 +1,30 @@
 $(document).ready(function() {
-    console.log('=== FIXED FLIPCLOCK V1 ===');
+    console.log('=== FIXED FLIPCLOCK V2 - HOURLY COUNTER ===');
     
-    var clock;
+    var now = new Date();
+    var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
     
-    function initClock() {
-        // Очищаем контейнер
-        $('.clock').empty();
-        
-        // Получаем текущее время
-        var now = new Date();
-        var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-        
-        console.log('Initializing clock with:', now.toLocaleTimeString(), 'Total seconds:', totalSeconds);
-        
-        // Создаем новый FlipClock
-        clock = new FlipClock($('.clock'), totalSeconds, {
-            clockFace: 'TwentyFourHourClock',
-            autoStart: false,
-            showSeconds: true,
-            countdown: false
-        });
-        
-        // Агрессивная остановка
-        if (clock.stop) clock.stop();
-        if (clock.interval) clearInterval(clock.interval);
-        if (clock._interval) clearInterval(clock._interval);
-        clock.running = false;
-    }
+    console.log('Initial time:', now.toLocaleTimeString(), 'Total seconds:', totalSeconds);
+    
+    // Используем HourlyCounter вместо TwentyFourHourClock
+    var clock = new FlipClock($('.clock'), totalSeconds, {
+        clockFace: 'HourlyCounter',
+        autoStart: false,
+        showSeconds: true
+    });
+    
+    // Останавливаем
+    clock.stop();
     
     function updateClock() {
         var now = new Date();
         var currentTotalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
         
-        // Обновляем дату
         $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
+        clock.setTime(currentTotalSeconds);
         
-        // Полностью пересоздаем часы каждую минуту (или при сбое)
-        if (now.getSeconds() === 0) {
-            console.log('Minute change - recreating clock');
-            initClock();
-        } else {
-            // Просто обновляем время
-            if (clock && clock.setTime) {
-                clock.setTime(currentTotalSeconds);
-            }
-        }
-        
-        console.log('Update:', now.toLocaleTimeString(), 'Total seconds:', currentTotalSeconds);
+        console.log('Update:', now.toLocaleTimeString());
     }
     
-    // Инициализация
-    initClock();
-    
-    // Обновление каждую секунду
     setInterval(updateClock, 1000);
 });
