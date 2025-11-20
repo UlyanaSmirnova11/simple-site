@@ -1,19 +1,52 @@
+let clockHours, clockMinutes, clockSeconds;
+
+function initClocks() {
+    clockHours = new FlipClock(document.getElementById('clock-hours'), 0, {
+        clockFace: 'HourCounter',
+        autoStart: false
+    });
+    
+    clockMinutes = new FlipClock(document.getElementById('clock-minutes'), 0, {
+        clockFace: 'MinuteCounter', 
+        autoStart: false
+    });
+    
+    clockSeconds = new FlipClock(document.getElementById('clock-seconds'), 0, {
+        clockFace: 'SecondCounter',
+        autoStart: false
+    });
+}
+
 function updateDateTime() {
     const now = new Date();
     
-    // Форматирование даты
     const dateString = now.toLocaleDateString('ru-RU');
     
-    // Форматирование времени
-    const timeString = now.toLocaleTimeString('ru-RU');
-    
-    // Обновление элементов на странице
     document.getElementById('date').textContent = 'Дата: ' + dateString;
-    document.getElementById('time').textContent = 'Время: ' + timeString;
+    
+    updateFlipClock(now);
 }
 
-// Обновляем время сразу при загрузке
-updateDateTime();
+function updateFlipClock(now) {
+    const hours = now.getHours();
+    const minutes = now.getMinutes(); 
+    const seconds = now.getSeconds();
+    
+    if (clockHours) {
+        clockHours.setTime(hours);
+    }
+    if (clockMinutes) {
+        clockMinutes.setTime(minutes);
+    }
+    if (clockSeconds) {
+        clockSeconds.setTime(seconds);
+    }
+}
 
-// Обновляем время каждую секунду
-setInterval(updateDateTime, 1000);
+document.addEventListener('DOMContentLoaded', function() {
+    initClocks();
+    updateDateTime();
+    
+    // Обновляем время каждую секунду
+    setInterval(updateDateTime, 1000);
+});
