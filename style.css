@@ -33,18 +33,21 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 120px;
 }
 
-/* Стили для центрирования flipclock */
+/* Стили для нормального flipclock */
 .flip-clock-wrapper {
     margin: 0 auto !important;
-    text-align: center !important;
-    display: inline-block !important;
+    text-align: center;
+    display: block !important;
+    width: auto !important;
 }
 
 .flip-clock-wrapper ul {
     float: none !important;
-    margin: 0 5px !important;
+    display: inline-block !important;
+    margin: 0 2px !important;
 }
 
 .image-container {
