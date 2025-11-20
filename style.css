@@ -36,18 +36,28 @@ h1 {
     min-height: 120px;
 }
 
-/* Стили для нормального flipclock */
+/* Жесткое центрирование flipclock */
 .flip-clock-wrapper {
     margin: 0 auto !important;
-    text-align: center;
-    display: block !important;
-    width: auto !important;
+    text-align: center !important;
+    display: table !important;
+    float: none !important;
 }
 
 .flip-clock-wrapper ul {
     float: none !important;
     display: inline-block !important;
-    margin: 0 2px !important;
+    margin: 0 5px !important;
+}
+
+.flip-clock-divider {
+    float: none !important;
+    display: inline-block !important;
+}
+
+.flip-clock-wrapper ul li {
+    float: none !important;
+    display: inline-block !important;
 }
 
 .image-container {
