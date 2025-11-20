@@ -32,6 +32,19 @@ h1 {
     border: 2px solid #ddd;
     display: flex;
     justify-content: center;
+    align-items: center;
+}
+
+/* Стили для центрирования flipclock */
+.flip-clock-wrapper {
+    margin: 0 auto !important;
+    text-align: center !important;
+    display: inline-block !important;
+}
+
+.flip-clock-wrapper ul {
+    float: none !important;
+    margin: 0 5px !important;
 }
 
 .image-container {
