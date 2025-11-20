@@ -1,52 +1,24 @@
-let clockHours, clockMinutes, clockSeconds;
-
-function initClocks() {
-    clockHours = new FlipClock(document.getElementById('clock-hours'), 0, {
-        clockFace: 'HourCounter',
-        autoStart: false
+$(document).ready(function() {
+    // Создаем flipclock
+    var clock = $('#clock').FlipClock({
+        clockFace: 'TwentyFourHourClock',
+        autoStart: true,
+        showSeconds: true
     });
     
-    clockMinutes = new FlipClock(document.getElementById('clock-minutes'), 0, {
-        clockFace: 'MinuteCounter', 
-        autoStart: false
-    });
-    
-    clockSeconds = new FlipClock(document.getElementById('clock-seconds'), 0, {
-        clockFace: 'SecondCounter',
-        autoStart: false
-    });
-}
-
-function updateDateTime() {
-    const now = new Date();
-    
-    const dateString = now.toLocaleDateString('ru-RU');
-    
-    document.getElementById('date').textContent = 'Дата: ' + dateString;
-    
-    updateFlipClock(now);
-}
-
-function updateFlipClock(now) {
-    const hours = now.getHours();
-    const minutes = now.getMinutes(); 
-    const seconds = now.getSeconds();
-    
-    if (clockHours) {
-        clockHours.setTime(hours);
+    // Функция обновления даты
+    function updateDate() {
+        var now = new Date();
+        $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
     }
-    if (clockMinutes) {
-        clockMinutes.setTime(minutes);
-    }
-    if (clockSeconds) {
-        clockSeconds.setTime(seconds);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    initClocks();
-    updateDateTime();
     
     // Обновляем время каждую секунду
-    setInterval(updateDateTime, 1000);
+    setInterval(function() {
+        var now = new Date();
+        var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        clock.setTime(totalSeconds);
+        updateDate();
+    }, 1000);
+    
+    updateDate();
 });
