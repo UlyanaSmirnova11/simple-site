@@ -1,39 +1,66 @@
 $(document).ready(function() {
+    console.log('=== FLIPCLOCK DEBUG ===');
+    
     // Получаем точное текущее время
-    var now = new Date();
-    var currentTime = now.getTime(); // timestamp в миллисекундах
+    var initialTime = new Date();
+    var initialTotalSeconds = initialTime.getHours() * 3600 + initialTime.getMinutes() * 60 + initialTime.getSeconds();
     
-    // Вычисляем начальное время в секундах
-    var startSeconds = Math.floor(currentTime / 1000);
+    console.log('Initial time:', initialTime.getHours() + ':' + initialTime.getMinutes() + ':' + initialTime.getSeconds());
+    console.log('Initial total seconds:', initialTotalSeconds);
     
-    // Создаем flipclock
-    var clock = new FlipClock($('.clock'), startSeconds, {
+    // Создаем flipclock с текущим временем
+    var clock = new FlipClock($('.clock'), initialTotalSeconds, {
         clockFace: 'TwentyFourHourClock',
         autoStart: false, // ВАЖНО: false!
         showSeconds: true,
         countdown: false
     });
     
-    // Функция обновления даты
-    function updateDate() {
-        var now = new Date();
-        $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
+    console.log('FlipClock created, autoStart: false');
+    
+    // ОСТАНАВЛИВАЕМ ВСЕ внутренние таймеры flipclock
+    if (clock.stop) {
+        clock.stop();
+        console.log('Clock stopped');
     }
     
-    // Функция точного обновления времени
+    // Обнуляем интервалы
+    if (clock.interval) {
+        clearInterval(clock.interval);
+        clock.interval = null;
+    }
+    
+    // Переменные для контроля
+    var lastSeconds = initialTotalSeconds;
+    var updateCount = 0;
+    
+    // Функция точного обновления
     function updateTime() {
         var now = new Date();
-        var currentSeconds = Math.floor(now.getTime() / 1000);
-        clock.setTime(currentSeconds);
+        var currentTotalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        
+        // Обновляем только если секунда изменилась
+        if (currentTotalSeconds !== lastSeconds) {
+            updateCount++;
+            
+            // Обновляем дату
+            $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
+            
+            // Обновляем время
+            clock.setTime(currentTotalSeconds);
+            lastSeconds = currentTotalSeconds;
+            
+            console.log('Update ' + updateCount + ':', 
+                       now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds(),
+                       'Total seconds:', currentTotalSeconds);
+        }
     }
     
-    // Инициализация
-    updateDate();
+    // Запускаем с высокой частотой проверки, но обновляем только при изменении
+    setInterval(updateTime, 50); // Проверяем каждые 50ms
+    
+    // Первое обновление
     updateTime();
     
-    // Точный интервал обновления
-    setInterval(function() {
-        updateDate();
-        updateTime();
-    }, 1000);
+    console.log('=== FLIPCLOCK READY ===');
 });
