@@ -1,54 +1,25 @@
 $(document).ready(function() {
-    console.log('=== SIMPLE FLIP CLOCK ===');
+    console.log('=== FIXED FLIPCLOCK V2 - HOURLY COUNTER ===');
     
-    // Очищаем контейнер
-    $('.clock').empty();
+    var now = new Date();
+    var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
     
-    function createFlipClock() {
-        var now = new Date();
-        var hours = now.getHours().toString().padStart(2, '0');
-        var minutes = now.getMinutes().toString().padStart(2, '0');
-        var seconds = now.getSeconds().toString().padStart(2, '0');
-        
-        var clockHTML = `
-            <div class="flip-clock">
-                <div class="flip-digit" data-digit="${hours[0]}">${hours[0]}</div>
-                <div class="flip-digit" data-digit="${hours[1]}">${hours[1]}</div>
-                <div class="separator">:</div>
-                <div class="flip-digit" data-digit="${minutes[0]}">${minutes[0]}</div>
-                <div class="flip-digit" data-digit="${minutes[1]}">${minutes[1]}</div>
-                <div class="separator">:</div>
-                <div class="flip-digit" data-digit="${seconds[0]}">${seconds[0]}</div>
-                <div class="flip-digit" data-digit="${seconds[1]}">${seconds[1]}</div>
-            </div>
-        `;
-        
-        $('.clock').html(clockHTML);
-    }
+    console.log('Initial time:', now.toLocaleTimeString(), 'Total seconds:', totalSeconds);
+    
+    // Используем HourlyCounter вместо TwentyFourHourClock
+    var clock = new FlipClock($('.clock'), totalSeconds, {
+        clockFace: 'HourlyCounter',
+        autoStart: false,
+        showSeconds: true
+    });
+    
+    // Останавливаем
+    clock.stop();
     
     // Добавляем стили для flip-эффекта
     $('head').append(`
         <style>
-            .flip-clock {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 5px;
-            }
-            .flip-digit {
-                width: 40px;
-                height: 60px;
-                background: #000;
-                color: white;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 24px;
-                font-weight: bold;
-                position: relative;
-                overflow: hidden;
-            }
-            .flip-digit.flipping {
+            .flip-clock-wrapper ul li a div div.inn {
                 animation: flip 0.6s ease-in-out;
             }
             @keyframes flip {
@@ -56,37 +27,18 @@ $(document).ready(function() {
                 50% { transform: rotateX(-90deg); }
                 100% { transform: rotateX(0deg); }
             }
-            .separator {
-                font-size: 20px;
-                font-weight: bold;
-            }
         </style>
     `);
     
     function updateClock() {
         var now = new Date();
-        var hours = now.getHours().toString().padStart(2, '0');
-        var minutes = now.getMinutes().toString().padStart(2, '0');
-        var seconds = now.getSeconds().toString().padStart(2, '0');
+        var currentTotalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
         
         $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
+        clock.setTime(currentTotalSeconds);
         
-        var digits = $('.flip-digit');
-        if (digits.length === 6) {
-            [hours[0], hours[1], minutes[0], minutes[1], seconds[0], seconds[1]].forEach((digit, index) => {
-                var digitElement = digits[index];
-                if ($(digitElement).attr('data-digit') !== digit) {
-                    $(digitElement).addClass('flipping');
-                    $(digitElement).attr('data-digit', digit);
-                    $(digitElement).text(digit);
-                    setTimeout(() => {
-                        $(digitElement).removeClass('flipping');
-                    }, 600);
-                }
-            });
-        }
+        console.log('Update:', now.toLocaleTimeString());
     }
     
-    createFlipClock();
     setInterval(updateClock, 1000);
 });
