@@ -1,22 +1,16 @@
 $(document).ready(function() {
-    console.log('=== FIXED FLIPCLOCK V2 - HOURLY COUNTER ===');
-    
     var now = new Date();
     var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
     
-    console.log('Initial time:', now.toLocaleTimeString(), 'Total seconds:', totalSeconds);
-    
-    // Используем HourlyCounter вместо TwentyFourHourClock
     var clock = new FlipClock($('.clock'), totalSeconds, {
         clockFace: 'HourlyCounter',
         autoStart: false,
         showSeconds: true
     });
     
-    // Останавливаем
     clock.stop();
     
-    // Добавляем стили для flip-эффекта
+    // Стили для flip-эффекта
     $('head').append(`
         <style>
             .flip-clock-wrapper ul li a div div.inn {
@@ -33,13 +27,9 @@ $(document).ready(function() {
     function updateClock() {
         var now = new Date();
         var currentTotalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-        
-        $('#date').text(now.toLocaleDateString('ru-RU'));
+        $('.date').text(now.toLocaleDateString('ru-RU'));
         clock.setTime(currentTotalSeconds);
-        
-        console.log('Update:', now.toLocaleTimeString());
     }
     
     setInterval(updateClock, 1000);
 });
-
