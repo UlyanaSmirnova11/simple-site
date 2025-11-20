@@ -30,27 +30,8 @@ h1 {
     background: #f9f9f9;
     border-radius: 10px;
     border: 2px solid #ddd;
-}
-
-.clock-label {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 10px 0 5px 0;
-    color: #333;
-}
-
-.flip-clock {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-/* Стили для адаптации flipclock */
-.flip-clock-wrapper {
-    margin: 0 auto;
-}
-
-.flip-clock-wrapper ul {
-    box-shadow: none;
+    display: flex;
+    justify-content: center;
 }
 
 .image-container {
