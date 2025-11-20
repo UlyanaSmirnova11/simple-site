@@ -1,83 +1,49 @@
 $(document).ready(function() {
-    console.log('=== FLIPCLOCK DEBUG ===');
+    console.log('=== CUSTOM CLOCK SOLUTION ===');
     
-    // Получаем точное текущее время
-    var initialTime = new Date();
-    var initialTotalSeconds = initialTime.getHours() * 3600 + initialTime.getMinutes() * 60 + initialTime.getSeconds();
-    
-    console.log('Initial time:', initialTime.toLocaleTimeString());
-    console.log('Initial total seconds:', initialTotalSeconds);
-    
-    // Создаем flipclock с текущим временем
-    var clock = new FlipClock($('.clock'), initialTotalSeconds, {
-        clockFace: 'TwentyFourHourClock',
-        autoStart: false,
-        showSeconds: true,
-        countdown: false
-    });
-    
-    console.log('FlipClock created, autoStart: false');
-    
-    // АГРЕССИВНАЯ ОСТАНОВКА всех внутренних процессов
-    if (typeof clock.stop === 'function') {
-        clock.stop();
-    }
-    
-    // Очищаем все возможные интервалы
-    if (clock.interval) {
-        clearInterval(clock.interval);
-        clock.interval = null;
-    }
-    
-    if (clock._interval) {
-        clearInterval(clock._interval);
-        clock._interval = null;
-    }
-    
-    // Дополнительные меры для остановки
-    clock.running = false;
-    
-    // Переменные для контроля
-    var lastSeconds = initialTotalSeconds;
-    var updateCount = 0;
-    
-    // Функция точного обновления
-    function updateTime() {
+    function updateAllDisplays() {
         var now = new Date();
-        var currentTotalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
         
-        // Обновляем только если секунда изменилась
-        if (currentTotalSeconds !== lastSeconds) {
-            updateCount++;
-            
-            // Обновляем дату
-            $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
-            
-            // ОСТАНАВЛИВАЕМ перед обновлением (дополнительная защита)
-            if (typeof clock.stop === 'function') {
-                clock.stop();
-            }
-            
-            // Обновляем время
-            clock.setTime(currentTotalSeconds);
-            lastSeconds = currentTotalSeconds;
-            
-            console.log('Update ' + updateCount + ':', 
-                       now.toLocaleTimeString(),
-                       'Total seconds:', currentTotalSeconds);
-            
-            // Сразу останавливаем после обновления
-            if (typeof clock.stop === 'function') {
-                clock.stop();
-            }
-        }
+        // Обновляем дату
+        $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
+        
+        // Получаем компоненты времени
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
+        
+        // Форматируем в 2 цифры
+        var timeString = 
+            hours.toString().padStart(2, '0') + ':' + 
+            minutes.toString().padStart(2, '0') + ':' + 
+            seconds.toString().padStart(2, '0');
+        
+        console.log('Current time:', timeString);
+        
+        // ОБНОВЛЯЕМ FLIPCLOCK ВРУЧНУЮ
+        updateFlipClockDigits(hours, minutes, seconds);
     }
     
-    // Более редкая проверка - достаточно 200ms
-    setInterval(updateTime, 200);
+    function updateFlipClockDigits(hours, minutes, seconds) {
+        // Преобразуем время в отдельные цифры
+        var hourStr = hours.toString().padStart(2, '0');
+        var minuteStr = minutes.toString().padStart(2, '0');
+        var secondStr = seconds.toString().padStart(2, '0');
+        
+        // Находим все flip-элементы и обновляем их
+        var flipElements = $('.flip-clock-divider, .flip-clock-piece');
+        
+        // Альтернативный подход - обновляем через CSS/HTML
+        $('.clock').html(`
+            <div style="display: flex; justify-content: center; font-size: 48px; font-family: monospace;">
+                <span>${hourStr}</span>:<span>${minuteStr}</span>:<span>${secondStr}</span>
+            </div>
+        `);
+    }
     
-    // Первое обновление
-    updateTime();
+    // Обновляем каждую секунду
+    setInterval(updateAllDisplays, 1000);
+    updateAllDisplays(); // Первое обновление
     
-    console.log('=== FLIPCLOCK READY ===');
+    console.log('=== CUSTOM CLOCK READY ===');
 });
