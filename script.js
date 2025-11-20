@@ -1,34 +1,43 @@
 $(document).ready(function() {
-    // Функция для получения текущего времени в секундах
-    function getCurrentTimeInSeconds() {
-        var now = new Date();
-        return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-    }
+    // Получаем точное текущее время
+    var now = new Date();
+    var currentTimeInSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
     
     // Создаем flipclock с текущим временем
-    var currentTime = getCurrentTimeInSeconds();
-    var clock = new FlipClock($('.clock'), currentTime, {
+    var clock = new FlipClock($('.clock'), currentTimeInSeconds, {
         clockFace: 'TwentyFourHourClock',
-        autoStart: false, // ВЫКЛЮЧАЕМ автостарт!
+        autoStart: false, // ВЫКЛЮЧАЕМ автообновление
         showSeconds: true,
         countdown: false
     });
     
-    // Функция обновления даты и времени
-    function updateDateTime() {
+    // Функция обновления даты
+    function updateDate() {
         var now = new Date();
-        
-        // Обновляем дату
         $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
-        
-        // Обновляем время (только если изменилась секунда)
-        var currentTime = getCurrentTimeInSeconds();
-        clock.setTime(currentTime);
     }
     
-    // ТОЛЬКО обновляем время каждую секунду (не даем flipclock самому обновляться)
-    setInterval(updateDateTime, 1000);
+    // Переменная для отслеживания предыдущего времени
+    var previousSeconds = currentTimeInSeconds;
     
-    // Первое обновление
-    updateDateTime();
+    // Функция обновления времени
+    function updateTime() {
+        var now = new Date();
+        var currentSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        
+        // Обновляем только если время изменилось
+        if (currentSeconds !== previousSeconds) {
+            clock.setTime(currentSeconds);
+            previousSeconds = currentSeconds;
+        }
+    }
+    
+    // Обновляем дату сразу
+    updateDate();
+    
+    // Проверяем время каждые 100ms, но обновляем только при изменении секунды
+    setInterval(function() {
+        updateTime();
+        updateDate();
+    }, 100);
 });
