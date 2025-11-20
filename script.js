@@ -9,24 +9,26 @@ $(document).ready(function() {
     var currentTime = getCurrentTimeInSeconds();
     var clock = new FlipClock($('.clock'), currentTime, {
         clockFace: 'TwentyFourHourClock',
-        autoStart: true,
+        autoStart: false, // ВЫКЛЮЧАЕМ автостарт!
         showSeconds: true,
         countdown: false
     });
     
-    // Функция обновления даты
-    function updateDate() {
+    // Функция обновления даты и времени
+    function updateDateTime() {
         var now = new Date();
+        
+        // Обновляем дату
         $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
-    }
-    
-    // Обновляем время каждую секунду
-    setInterval(function() {
+        
+        // Обновляем время (только если изменилась секунда)
         var currentTime = getCurrentTimeInSeconds();
         clock.setTime(currentTime);
-        updateDate();
-    }, 1000);
+    }
     
-    // Первое обновление даты
-    updateDate();
+    // ТОЛЬКО обновляем время каждую секунду (не даем flipclock самому обновляться)
+    setInterval(updateDateTime, 1000);
+    
+    // Первое обновление
+    updateDateTime();
 });
