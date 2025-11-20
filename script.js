@@ -5,30 +5,37 @@ $(document).ready(function() {
     var initialTime = new Date();
     var initialTotalSeconds = initialTime.getHours() * 3600 + initialTime.getMinutes() * 60 + initialTime.getSeconds();
     
-    console.log('Initial time:', initialTime.getHours() + ':' + initialTime.getMinutes() + ':' + initialTime.getSeconds());
+    console.log('Initial time:', initialTime.toLocaleTimeString());
     console.log('Initial total seconds:', initialTotalSeconds);
     
     // Создаем flipclock с текущим временем
     var clock = new FlipClock($('.clock'), initialTotalSeconds, {
         clockFace: 'TwentyFourHourClock',
-        autoStart: false, // ВАЖНО: false!
+        autoStart: false,
         showSeconds: true,
         countdown: false
     });
     
     console.log('FlipClock created, autoStart: false');
     
-    // ОСТАНАВЛИВАЕМ ВСЕ внутренние таймеры flipclock
-    if (clock.stop) {
+    // АГРЕССИВНАЯ ОСТАНОВКА всех внутренних процессов
+    if (typeof clock.stop === 'function') {
         clock.stop();
-        console.log('Clock stopped');
     }
     
-    // Обнуляем интервалы
+    // Очищаем все возможные интервалы
     if (clock.interval) {
         clearInterval(clock.interval);
         clock.interval = null;
     }
+    
+    if (clock._interval) {
+        clearInterval(clock._interval);
+        clock._interval = null;
+    }
+    
+    // Дополнительные меры для остановки
+    clock.running = false;
     
     // Переменные для контроля
     var lastSeconds = initialTotalSeconds;
@@ -46,18 +53,28 @@ $(document).ready(function() {
             // Обновляем дату
             $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
             
+            // ОСТАНАВЛИВАЕМ перед обновлением (дополнительная защита)
+            if (typeof clock.stop === 'function') {
+                clock.stop();
+            }
+            
             // Обновляем время
             clock.setTime(currentTotalSeconds);
             lastSeconds = currentTotalSeconds;
             
             console.log('Update ' + updateCount + ':', 
-                       now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds(),
+                       now.toLocaleTimeString(),
                        'Total seconds:', currentTotalSeconds);
+            
+            // Сразу останавливаем после обновления
+            if (typeof clock.stop === 'function') {
+                clock.stop();
+            }
         }
     }
     
-    // Запускаем с высокой частотой проверки, но обновляем только при изменении
-    setInterval(updateTime, 50); // Проверяем каждые 50ms
+    // Более редкая проверка - достаточно 200ms
+    setInterval(updateTime, 200);
     
     // Первое обновление
     updateTime();
