@@ -4,23 +4,15 @@
     <meta charset="UTF-8">
     <title>Сайт с датой и временем</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="flipclock/themes/flipclock.css">
+    <link rel="stylesheet" href="flipclock/flipclock.css">
 </head>
 <body>
     <div class="container">
         <h1>Текущая дата и время</h1>
-        
         <div id="date" class="date"></div>
         
         <div class="clock-container">
-            <div class="clock-label">Часы</div>
-            <div id="clock-hours" class="flip-clock"></div>
-            
-            <div class="clock-label">Минуты</div>
-            <div id="clock-minutes" class="flip-clock"></div>
-            
-            <div class="clock-label">Секунды</div>
-            <div id="clock-seconds" class="flip-clock"></div>
+            <div class="clock" id="clock"></div>
         </div>
         
         <div class="image-container">
@@ -28,10 +20,8 @@
         </div>
     </div>
     
-    
-    <script src="flipclock/FlipClock.umd.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="flipclock/flipclock.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
-
-
