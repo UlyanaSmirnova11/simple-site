@@ -1,49 +1,57 @@
 $(document).ready(function() {
-    console.log('=== CUSTOM CLOCK SOLUTION ===');
+    console.log('=== FIXED FLIPCLOCK V1 ===');
     
-    function updateAllDisplays() {
+    var clock;
+    
+    function initClock() {
+        // Очищаем контейнер
+        $('.clock').empty();
+        
+        // Получаем текущее время
         var now = new Date();
+        var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        
+        console.log('Initializing clock with:', now.toLocaleTimeString(), 'Total seconds:', totalSeconds);
+        
+        // Создаем новый FlipClock
+        clock = new FlipClock($('.clock'), totalSeconds, {
+            clockFace: 'TwentyFourHourClock',
+            autoStart: false,
+            showSeconds: true,
+            countdown: false
+        });
+        
+        // Агрессивная остановка
+        if (clock.stop) clock.stop();
+        if (clock.interval) clearInterval(clock.interval);
+        if (clock._interval) clearInterval(clock._interval);
+        clock.running = false;
+    }
+    
+    function updateClock() {
+        var now = new Date();
+        var currentTotalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
         
         // Обновляем дату
         $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
         
-        // Получаем компоненты времени
-        var hours = now.getHours();
-        var minutes = now.getMinutes();
-        var seconds = now.getSeconds();
+        // Полностью пересоздаем часы каждую минуту (или при сбое)
+        if (now.getSeconds() === 0) {
+            console.log('Minute change - recreating clock');
+            initClock();
+        } else {
+            // Просто обновляем время
+            if (clock && clock.setTime) {
+                clock.setTime(currentTotalSeconds);
+            }
+        }
         
-        // Форматируем в 2 цифры
-        var timeString = 
-            hours.toString().padStart(2, '0') + ':' + 
-            minutes.toString().padStart(2, '0') + ':' + 
-            seconds.toString().padStart(2, '0');
-        
-        console.log('Current time:', timeString);
-        
-        // ОБНОВЛЯЕМ FLIPCLOCK ВРУЧНУЮ
-        updateFlipClockDigits(hours, minutes, seconds);
+        console.log('Update:', now.toLocaleTimeString(), 'Total seconds:', currentTotalSeconds);
     }
     
-    function updateFlipClockDigits(hours, minutes, seconds) {
-        // Преобразуем время в отдельные цифры
-        var hourStr = hours.toString().padStart(2, '0');
-        var minuteStr = minutes.toString().padStart(2, '0');
-        var secondStr = seconds.toString().padStart(2, '0');
-        
-        // Находим все flip-элементы и обновляем их
-        var flipElements = $('.flip-clock-divider, .flip-clock-piece');
-        
-        // Альтернативный подход - обновляем через CSS/HTML
-        $('.clock').html(`
-            <div style="display: flex; justify-content: center; font-size: 48px; font-family: monospace;">
-                <span>${hourStr}</span>:<span>${minuteStr}</span>:<span>${secondStr}</span>
-            </div>
-        `);
-    }
+    // Инициализация
+    initClock();
     
-    // Обновляем каждую секунду
-    setInterval(updateAllDisplays, 1000);
-    updateAllDisplays(); // Первое обновление
-    
-    console.log('=== CUSTOM CLOCK READY ===');
+    // Обновление каждую секунду
+    setInterval(updateClock, 1000);
 });
