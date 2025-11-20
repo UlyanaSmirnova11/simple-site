@@ -34,7 +34,7 @@ $(document).ready(function() {
         var now = new Date();
         var currentTotalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
         
-        $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
+        $('#date').text(now.toLocaleDateString('ru-RU'));
         clock.setTime(currentTotalSeconds);
         
         console.log('Update:', now.toLocaleTimeString());
@@ -42,3 +42,4 @@ $(document).ready(function() {
     
     setInterval(updateClock, 1000);
 });
+
