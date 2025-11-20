@@ -1,10 +1,10 @@
 $(document).ready(function() {
     // Получаем точное текущее время
     var now = new Date();
-    var currentTimeInSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    var startTime = now.getTime(); // timestamp в миллисекундах
     
-    // Создаем flipclock с текущим временем
-    var clock = new FlipClock($('.clock'), currentTimeInSeconds, {
+    // Создаем flipclock с нулевым временем
+    var clock = new FlipClock($('.clock'), 0, {
         clockFace: 'TwentyFourHourClock',
         autoStart: false, // ВЫКЛЮЧАЕМ автообновление
         showSeconds: true,
@@ -17,27 +17,27 @@ $(document).ready(function() {
         $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
     }
     
-    // Переменная для отслеживания предыдущего времени
-    var previousSeconds = currentTimeInSeconds;
-    
     // Функция обновления времени
     function updateTime() {
         var now = new Date();
-        var currentSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
         
-        // Обновляем только если время изменилось
-        if (currentSeconds !== previousSeconds) {
-            clock.setTime(currentSeconds);
-            previousSeconds = currentSeconds;
-        }
+        // Вычисляем общее время в секундах
+        var totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        
+        // Устанавливаем точное время
+        clock.setTime(totalSeconds);
     }
     
-    // Обновляем дату сразу
+    // Обновляем сразу
     updateDate();
+    updateTime();
     
-    // Проверяем время каждые 100ms, но обновляем только при изменении секунды
+    // Обновляем время каждую секунду
     setInterval(function() {
-        updateTime();
         updateDate();
-    }, 100);
+        updateTime();
+    }, 1000);
 });
