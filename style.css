@@ -19,9 +19,10 @@ h1 {
 }
 
 .date {
-    font-size: 30px;
+    font-size: 48px;
     margin: 20px 0;
     color: #666;
+    font-weight: bold;
 }
 
 .clock-container {
@@ -69,4 +70,5 @@ img {
     height: auto;
     border-radius: 5px;
 }
+
 
