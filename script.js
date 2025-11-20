@@ -1,9 +1,17 @@
 $(document).ready(function() {
-    // Создаем flipclock
-    var clock = $('#clock').FlipClock({
+    // Функция для получения текущего времени в секундах
+    function getCurrentTimeInSeconds() {
+        var now = new Date();
+        return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+    }
+    
+    // Создаем flipclock с текущим временем
+    var currentTime = getCurrentTimeInSeconds();
+    var clock = new FlipClock($('.clock'), currentTime, {
         clockFace: 'TwentyFourHourClock',
         autoStart: true,
-        showSeconds: true
+        showSeconds: true,
+        countdown: false
     });
     
     // Функция обновления даты
@@ -14,11 +22,11 @@ $(document).ready(function() {
     
     // Обновляем время каждую секунду
     setInterval(function() {
-        var now = new Date();
-        var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-        clock.setTime(totalSeconds);
+        var currentTime = getCurrentTimeInSeconds();
+        clock.setTime(currentTime);
         updateDate();
     }, 1000);
     
+    // Первое обновление даты
     updateDate();
 });
