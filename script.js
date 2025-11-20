@@ -1,25 +1,18 @@
 $(document).ready(function() {
-    // Глобальная переменная для хранения clock
-    var clock;
+    // Получаем точное текущее время
+    var now = new Date();
+    var currentTime = now.getTime(); // timestamp в миллисекундах
     
-    // Функция инициализации или обновления часов
-    function initOrUpdateClock() {
-        var now = new Date();
-        var totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
-        
-        if (!clock) {
-            // Первая инициализация
-            clock = new FlipClock($('.clock'), totalSeconds, {
-                clockFace: 'TwentyFourHourClock',
-                autoStart: false,
-                showSeconds: true,
-                countdown: false
-            });
-        } else {
-            // Обновление существующих часов
-            clock.setTime(totalSeconds);
-        }
-    }
+    // Вычисляем начальное время в секундах
+    var startSeconds = Math.floor(currentTime / 1000);
+    
+    // Создаем flipclock
+    var clock = new FlipClock($('.clock'), startSeconds, {
+        clockFace: 'TwentyFourHourClock',
+        autoStart: false, // ВАЖНО: false!
+        showSeconds: true,
+        countdown: false
+    });
     
     // Функция обновления даты
     function updateDate() {
@@ -27,15 +20,20 @@ $(document).ready(function() {
         $('#date').text('Дата: ' + now.toLocaleDateString('ru-RU'));
     }
     
-    // Основная функция обновления
-    function updateAll() {
-        updateDate();
-        initOrUpdateClock();
+    // Функция точного обновления времени
+    function updateTime() {
+        var now = new Date();
+        var currentSeconds = Math.floor(now.getTime() / 1000);
+        clock.setTime(currentSeconds);
     }
     
-    // Запускаем сразу
-    updateAll();
+    // Инициализация
+    updateDate();
+    updateTime();
     
-    // Обновляем каждую секунду
-    setInterval(updateAll, 1000);
+    // Точный интервал обновления
+    setInterval(function() {
+        updateDate();
+        updateTime();
+    }, 1000);
 });
