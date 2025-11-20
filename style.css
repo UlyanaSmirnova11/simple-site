@@ -37,7 +37,7 @@ h1 {
     min-height: 120px;
 }
 
-/* Жесткое центрирование flipclock */
+/* центр для flipclock */
 .flip-clock-wrapper {
     margin: 0 auto !important;
     text-align: center !important;
@@ -70,5 +70,6 @@ img {
     height: auto;
     border-radius: 5px;
 }
+
 
 
