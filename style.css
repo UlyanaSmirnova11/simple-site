@@ -19,7 +19,7 @@ h1 {
 }
 
 .date {
-    font-size: 18px;
+    font-size: 30px;
     margin: 20px 0;
     color: #666;
 }
@@ -69,3 +69,4 @@ img {
     height: auto;
     border-radius: 5px;
 }
+
